@@ -90,14 +90,12 @@ class Node(object):
         self._successive = connected_node_dict
 
     def propagate(self, signal_information):
-        # Update the signal's path
         signal_information.update_path()
 
-        # Check if there are nodes left in the path
         if len(signal_information.path) > 0:
             next_node_label = signal_information.path[0]
 
-            # Check if the next node is in the successive nodes (dictionary)
+
             if next_node_label in self.successive:
                 # Propagate the signal through the next connected node
                 self.successive[next_node_label].propagate(signal_information)
@@ -140,13 +138,13 @@ class Line(object):
 
     def propagate(self):
 
-        signal_information.update_noise_power(self.noise_generation(signal_information.signal_power))
-        signal_information.update_latency(self.latency_generation())
+        Signal_information.update_noise_power(self.noise_generation(Signal_information.signal_power))
+        Signal_information.update_latency(self.latency_generation())
 
-        if len(signal_information.path) > 0:
-            next_node_label = signal_information.path[0]
+        if len(Signal_information.path) > 0:
+            next_node_label = Signal_information.path[0]
             if next_node_label in self.successive:
-                self.successive[next_node_label].propagate(signal_infomation)
+                self.successive[next_node_label].propagate()
             else:
                 print(f"Next node '{next_node_label}' is not connected to line '{self.label}'")
         else:
@@ -189,7 +187,7 @@ class Network:
         return self._lines
 
     def draw(self):
-        pass  # Optionally, add visualization code here
+        pass
 
     def find_paths(self, label1, label2):
         def find_paths_recursive(current_label, end_label, path, visited):
@@ -223,7 +221,6 @@ class Network:
                 line.successive[node2_label] = self.nodes[node2_label]
 
     def propagate(self, signal_information):
-        # Start propagation from the initial node in the path
         start_node_label = signal_information.path[0]
         if start_node_label in self.nodes:
             self.nodes[start_node_label].propagate(signal_information)
@@ -254,7 +251,6 @@ class Network:
         plt.show()
 
     def generate_path_dataframe(self):
-        # Initialize a DataFrame to store paths, latency, noise, and SNR
         df = pd.DataFrame(columns=["Path", "Total Latency (s)", "Total Noise Power (W)", "SNR (dB)"])
 
         # Loop through each pair of nodes
